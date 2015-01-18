@@ -48,7 +48,67 @@ install_adb() {
     fi
 }
 
+bootloader() {
+    draw_header 4
+    echo "***             1: Get Unlock Code                                          ***"
+    echo "***             2: Unlock Bootloader                                        ***"
+    echo "***             3: Relock Bootloader                                        ***"
+    text_empty_line 2
+    echo "***             M: Back to Main Menu                                        ***"
+    echo "***             X: Exit                                                     ***"
+    draw_footer 2
+    vared -p "Select a number or letter and press ENTER : " -c selection
+    case $selection in
+        1 )
+            open http://www.emui.com/plugin.php?id=unlock&mod=detail
+            unlock
+            ;;
+        2 ) 
+            vared -p "Enter your 16-digit unlock code : " -c unlock_code
+            unlock $unlock_code
+            ;;
+        3 )
+            vared -p "Enter your 16-digit unlock code : " -c relock_code
+            relock $relock_code
+            ;;
+        * )
+            bootloader
+            ;;
+    esac
+}
+unlock() {
+    if [[ ! -z $1 ]]; then
+        adb reboot bootloader
+        fastboot devices
+        fastboot oem unlock $1
+        vared -p "Press enter when your phone indicate unlock success ..." -c key
+        fastboot reboot
+        menu
+    else
+        echo "ERROR : Please provide a correct 16 digit unlock code !!"
+        vared -p "Enter your 16-digit unlock code : " -c unlock_code
+        unlock $unlock_code
+    fi
+}
 
+relock() {
+    if [[ ! -z $1 ]]; then
+        adb reboot bootloader
+        fastboot devices
+        fastboot oem relock $1
+        vared -p "Press enter when your phone indicate unlock success ..." -c key
+        fastboot reboot
+        menu
+    else
+        echo "ERROR : Please provide a correct 16 digit unlock code !!"
+        vared -p "Enter your 16-digit unlock code : " -c relock_code
+        relock $relock_code
+    fi
+}
+
+recovery() {
+
+}
 
 
 
@@ -61,12 +121,11 @@ menu() {
     echo "***              4: Stock ROMs (MIRROR)                                     ***"
     text_empty_line 2
     echo "***              X: Exit                                                    ***"
-    text_empty_line 2
-    echo "==============================================================================="
+    draw_footer 2
     vared -p "Select a number or letter and press ENTER : " -c selection
     case $selection in
         1)
-            echo "bootloader"
+            bootloader
             ;;
         2)
             echo "Recovery"
