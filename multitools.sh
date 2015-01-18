@@ -47,5 +47,45 @@ install_adb() {
         brew install android-platform-tools
     fi
 }
+
+
+
+
+
+menu() {
+    draw_header 4
+    echo "***              1: Bootloader                                              ***"
+    echo "***              2: Recovery                                                ***"
+    text_empty_line 2
+    echo "***              3: Stock ROMs (EMUI)                                       ***"
+    echo "***              4: Stock ROMs (MIRROR)                                     ***"
+    text_empty_line 2
+    echo "***              X: Exit                                                    ***"
+    text_empty_line 2
+    echo "==============================================================================="
+    vared -p "Select a number or letter and press ENTER : " -c selection
+    case $selection in
+        1)
+            echo "bootloader"
+            ;;
+        2)
+            echo "Recovery"
+            ;;
+        3)
+            echo "Stock ROM EMUI"
+            ;;
+        4)
+            echo "Stock ROM MIRROR"
+            ;;
+        x)
+            exit 1
+            ;;
+        *)
+            echo "Please use a value in the menu"
+            menu
+    esac
+}
+
 install_brew
 install_adb
+menu
