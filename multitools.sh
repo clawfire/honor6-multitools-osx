@@ -60,7 +60,7 @@ bootloader() {
     vared -p "Select a number or letter and press ENTER : " -c selection
     case $selection in
         1 )
-            open http://www.emui.com/plugin.php?id=unlock&mod=detail
+            open "http://www.emui.com/plugin.php?id=unlock&mod=detail"
             unlock
             ;;
         2 ) 
@@ -77,7 +77,7 @@ bootloader() {
     esac
 }
 unlock() {
-    if [[ ! -z $1 ]]; then
+    if [[ ! -z $1 ]] && [[ ! `expr length $1` < 16 ]]; then
         adb reboot bootloader
         fastboot devices
         fastboot oem unlock $1
@@ -92,7 +92,7 @@ unlock() {
 }
 
 relock() {
-    if [[ ! -z $1 ]]; then
+    if [[ ! -z $1 ]] && [[ ! `expr length $1` < 16 ]]; then
         adb reboot bootloader
         fastboot devices
         fastboot oem relock $1
